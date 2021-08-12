@@ -163,7 +163,11 @@ class _TestUiState extends State<TestUi> {
                 height: 40,
                 child: ChipsFilter(
                   selected: 0, // select the first filter (0/1)
-                  onTap: () {}, filters: [],
+                  onTap: () {},
+                  filters: [
+                    Filter(label: 'Drink'),
+                    Filter(label: 'Drink'),
+                  ],
                 ),
               ),
             ],

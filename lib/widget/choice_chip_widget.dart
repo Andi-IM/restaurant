@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class ChipsFilter extends StatefulWidget {
   final List<Filter> filters;
-  final int selected;
+  late final int selected;
   final Function() onTap;
+
+  String get selectedItem {
+    return selected.toString();
+  }
 
   ChipsFilter({
     Key? key,
@@ -31,16 +35,10 @@ class _ChipsFilterState extends State<ChipsFilter> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          child: ListView.builder(
-            itemBuilder: this.chipBuilder,
-            itemCount: widget.filters.length,
-            scrollDirection: Axis.horizontal,
-          ),
-        ),
-      ],
+    return ListView.builder(
+      itemBuilder: this.chipBuilder,
+      itemCount: widget.filters.length,
+      scrollDirection: Axis.horizontal,
     );
   }
 
