@@ -65,14 +65,18 @@ ThemeData lightTheme = ThemeData(
     ),
   ),
   chipTheme: ChipThemeData(
-    labelStyle: TextStyle(),
-    selectedColor: primaryDarkColor,
-    disabledColor: Colors.grey,
+    labelStyle: TextStyle(
+      color: secondaryColor,
+    ),
+    selectedColor: secondaryColor,
+    disabledColor: primaryDarkColor,
     selectedShadowColor: Color(0xFFBDBDBD),
-    secondarySelectedColor: primaryColor,
-    secondaryLabelStyle: TextStyle(),
+    secondarySelectedColor: secondaryColor,
+    secondaryLabelStyle: TextStyle(
+      color: primaryColor,
+    ),
     brightness: Brightness.light,
-    backgroundColor: secondaryColor,
+    backgroundColor: Color(0xFFFFE9E9),
     padding: EdgeInsets.all(2),
   ),
 );

@@ -1,5 +1,6 @@
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:dicoding_restaurant/widget/choice_chip_widget.dart';
+import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,8 @@ class TestUi extends StatefulWidget {
 }
 
 class _TestUiState extends State<TestUi> {
+  var idSelected = 0;
+
   @override
   Widget build(BuildContext context) {
     final drink = <Item>[
@@ -158,22 +161,22 @@ class _TestUiState extends State<TestUi> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                height: 40,
-                child: ChipsFilter(
-                  selected: 0, // select the first filter (0/1)
-                  onTap: () {},
-                  filters: [
-                    Filter(label: 'Drink'),
-                    Filter(label: 'Drink'),
-                  ],
-                ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: listChip(menus),
               ),
+              currentTab(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget currentTab() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: chipBarList[idSelected].bodyWidget,
     );
   }
 
@@ -188,6 +191,27 @@ class _TestUiState extends State<TestUi> {
           height: 40,
         ),
       ),
+    );
+  }
+
+  Row listChip(Menus menu) {
+    foods.addAll(menu.foods);
+    drinks.addAll(menu.drinks);
+
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: chipBarList
+          .map(
+            (item) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: ChoiceChip(
+                label: Text(item.title),
+                selected: idSelected == item.id,
+                onSelected: (_) => setState(() => idSelected = item.id),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }

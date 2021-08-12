@@ -1,15 +1,21 @@
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:dicoding_restaurant/widget/choice_chip_widget.dart';
+import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RestaurantDetailPage extends StatelessWidget {
+class RestaurantDetailPage extends StatefulWidget {
   final Restaurant restaurant;
-
   const RestaurantDetailPage({required this.restaurant});
-
   static const String routeName = '/restaurant_detail_page';
+
+  @override
+  _RestaurantDetailPageState createState() => _RestaurantDetailPageState();
+}
+
+class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
+  var idSelected = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +30,9 @@ class RestaurantDetailPage extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 children: <Widget>[
                   Hero(
-                    tag: restaurant.pictureId,
+                    tag: widget.restaurant.pictureId,
                     child: Image.network(
-                      restaurant.pictureId,
+                      widget.restaurant.pictureId,
                       width: double.infinity,
                     ),
                   ),
@@ -67,7 +73,7 @@ class RestaurantDetailPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            restaurant.name,
+                            widget.restaurant.name,
                             style: GoogleFonts.poppins(
                               fontSize: 33,
                               fontWeight: FontWeight.bold,
@@ -80,7 +86,7 @@ class RestaurantDetailPage extends StatelessWidget {
                             children: [
                               SvgPicture.asset('assets/icon/pin_grey.svg'),
                               Text(
-                                restaurant.city,
+                                widget.restaurant.city,
                                 style: Theme.of(context).textTheme.caption,
                               ),
                             ],
@@ -99,7 +105,7 @@ class RestaurantDetailPage extends StatelessWidget {
                             color: Color(0xFFFFD700),
                           ),
                           Text(
-                            '${restaurant.rating}',
+                            '${widget.restaurant.rating}',
                             style: Theme.of(context).textTheme.headline4,
                           ),
                         ],
@@ -119,7 +125,7 @@ class RestaurantDetailPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.headline5,
                     ),
                     Text(
-                      '${restaurant.description}',
+                      '${widget.restaurant.description}',
                       textAlign: TextAlign.justify,
                       style: Theme.of(context).textTheme.bodyText2,
                     ),
@@ -131,21 +137,43 @@ class RestaurantDetailPage extends StatelessWidget {
                   ],
                 ),
               ),
-              /*Container(
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                height: 40,
-                child: ChipsFilter(
-                  selected: 0, // select the first fpuilter
-                  filters: [
-                    Filter(label: "Food"),
-                    Filter(label: "Drink"),
-                  ], onTap: () {  },
-                ),
-              ),*/
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: listChip(widget.restaurant.menus),
+              ),
+              currentTab(),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget currentTab() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: chipBarList[idSelected].bodyWidget,
+    );
+  }
+
+  Row listChip(Menus menu) {
+    foods.addAll(menu.foods);
+    drinks.addAll(menu.drinks);
+
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: chipBarList
+          .map(
+            (item) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: ChoiceChip(
+                label: Text(item.title),
+                selected: idSelected == item.id,
+                onSelected: (_) => setState(() => idSelected = item.id),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 
