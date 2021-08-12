@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       debugShowCheckedModeBanner: false,
-      initialRoute: TestUi.routeName,
+      initialRoute: RestaurantListPage.routeName,
       routes: {
         TestUi.routeName: (context) => TestUi(),
         RestaurantListPage.routeName: (context) => RestaurantListPage(),
