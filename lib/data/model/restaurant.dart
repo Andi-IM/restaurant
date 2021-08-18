@@ -1,16 +1,14 @@
-// To parse this JSON data, do
-//
-//     final welcome = welcomeFromJson(jsonString);
-
 import 'dart:convert';
-
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class DataApi {
-  static Future<List<Restaurant>> getRestaurants(String query) async {
-    var jsonText = await rootBundle.loadString('assets/local_restaurant.json');
+  static Future<List<Restaurant>> getRestaurants(String query, url) async {
+    var jsonText = await http.get(Uri.parse('https://restaurant-api.dicoding.dev/list/'));
+
     final Data data = dataFromJson(jsonText);
     final List<Restaurant> restaurants = data.restaurants;
+
+    if (restaurants.length == 0) return [];
 
     return restaurants.where((restaurant) {
       final nameLower = restaurant.name.toLowerCase();

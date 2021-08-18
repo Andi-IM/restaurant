@@ -7,6 +7,7 @@ import 'package:dicoding_restaurant/widget/custom_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RestaurantListPage extends StatefulWidget {
@@ -20,6 +21,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   List<Restaurant> restaurants = [];
   String query = '';
   Timer? debouncer;
+
+  String url = 'assets/local_restaurant.json';
+  // String url = '';
 
   @override
   void initState() {
@@ -44,12 +48,21 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   }
 
   Future init() async {
-    final restaurants = await DataApi.getRestaurants(query);
+    final restaurants =
+        await DataApi.getRestaurants(query, url).onError((error, stackTrace) {
+      print('Error!');
+      showToast('Error : No Internet');
+      return [];
+    });
+    print('panjang array : ${restaurants.length}');
     setState(() => this.restaurants = restaurants);
   }
 
   Future searchRestaurant(String query) async => debounce(() async {
-        final restaurants = await DataApi.getRestaurants(query);
+        final restaurants = await DataApi.getRestaurants(query, url)
+            .onError((error, stackTrace) {
+          return [];
+        });
 
         if (!mounted) return;
 
@@ -78,95 +91,93 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     );
   }
 
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(padding: const EdgeInsets.only(top: 10)),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icon/pin.svg',
-                      width: 20,
-                    ),
-                    Padding(padding: const EdgeInsets.symmetric(horizontal: 2)),
-                    Text('Choose location'),
-                  ],
-                ),
-                SvgPicture.asset(
-                  'assets/icon/user.svg',
-                  width: 40,
-                ),
-              ],
+      body: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icon/pin.svg',
+                        width: 20,
+                      ),
+                      Padding(padding: const EdgeInsets.symmetric(horizontal: 2)),
+                      Text('Choose location'),
+                    ],
+                  ),
+                  SvgPicture.asset(
+                    'assets/icon/user.svg',
+                    width: 40,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('RESTAURANT',
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('RESTAURANT',
+                      style: GoogleFonts.poppins(
+                        color: Color(0xFFFF4747),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 28,
+                      )),
+                  Text(
+                    'Recommendation restaurant for you!',
                     style: GoogleFonts.poppins(
-                      color: Color(0xFFFF4747),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 28,
-                    )),
-                Text(
-                  'Recommendation restaurant for you!',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: buildSearch(),
+                ),
+                Flexible(
+                  child: SvgPicture.asset(
+                    'assets/icon/filter.svg',
+                    width: 50,
                   ),
                 ),
               ],
             ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                flex: 5,
-                child: buildSearch(),
+            Flexible(
+              child: ListView.builder(
+                itemCount: restaurants.length,
+                itemBuilder: (context, index) {
+                  final restaurant = restaurants[index];
+                  return _buildRestaurantItem(context, restaurant);
+                },
               ),
-              Flexible(
-                child: SvgPicture.asset(
-                  'assets/icon/filter.svg',
-                  width: 50,
-                ),
-              ),
-            ],
-          ),
-          Flexible(
-            child: ListView.builder(
-              itemCount: restaurants.length,
-              itemBuilder: (context, index) {
-                final restaurant = restaurants[index];
-                return _buildRestaurantItem(context, restaurant);
-              },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
-
-/**
-    ListView.builder(
-    itemCount: restaurants.length,
-    itemBuilder: (context, index) {
-    final restaurant = restaurants[index];
-    return _buildRestaurantItem(context, restaurant);
-    },
-    ),
- **/

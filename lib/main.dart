@@ -13,9 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Restaurant',
       theme: lightTheme,
-      darkTheme: darkTheme,
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
-      initialRoute: RestaurantListPage.routeName,
+      initialRoute: RestaurantListPage  .routeName,
       routes: {
         TestUi.routeName: (context) => TestUi(),
         RestaurantListPage.routeName: (context) => RestaurantListPage(),
