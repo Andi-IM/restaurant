@@ -1,5 +1,4 @@
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
-import 'package:dicoding_restaurant/widget/choice_chip_widget.dart';
 import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
