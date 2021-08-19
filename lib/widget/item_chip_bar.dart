@@ -1,4 +1,4 @@
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
+import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

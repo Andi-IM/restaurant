@@ -1,26 +1,24 @@
+import 'package:dicoding_restaurant/data/model/restaurant.dart';
+import 'package:dicoding_restaurant/ui/restaurant_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomListItem extends StatelessWidget {
-  const CustomListItem({
-    required this.imageUrl,
-    required this.name,
-    required this.location,
-    required this.stars,
-    required this.onTap,
-  });
+  const CustomListItem({required this.restaurant});
 
-  final String imageUrl;
-  final String name;
-  final String location;
-  final double stars;
-  final Function() onTap;
+  final Restaurant restaurant;
+
+  static const _url = 'https://restaurant-api.dicoding.dev/images/small';
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => Navigator.pushNamed(
+        context,
+        RestaurantDetailPage.routeName,
+        arguments: restaurant.id,
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20),
         child: Row(
@@ -29,19 +27,19 @@ class CustomListItem extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Hero(
-                tag: imageUrl,
+                tag: restaurant.pictureId,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: Image.network(imageUrl),
+                  child: Image.network('$_url/${restaurant.pictureId}'),
                 ),
               ),
             ),
             Expanded(
               flex: 3,
-              child: _VideoDescription(
-                title: name,
-                location: location,
-                stars: stars,
+              child: _Description(
+                title: restaurant.name,
+                location: restaurant.city,
+                stars: restaurant.rating,
               ),
             ),
             Flexible(
@@ -54,8 +52,8 @@ class CustomListItem extends StatelessWidget {
   }
 }
 
-class _VideoDescription extends StatelessWidget {
-  const _VideoDescription({
+class _Description extends StatelessWidget {
+  const _Description({
     Key? key,
     required this.title,
     required this.location,
