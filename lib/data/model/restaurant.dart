@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 class DataApi {
   static Future<List<Restaurant>> getRestaurants(String query, url) async {
-    var jsonText = await http.get(Uri.parse('https://restaurant-api.dicoding.dev/list/'));
+    var jsonText = await rootBundle.loadString(url);
 
     final Data data = dataFromJson(jsonText);
     final List<Restaurant> restaurants = data.restaurants;

@@ -2,7 +2,6 @@ import 'package:dicoding_restaurant/commons/theme.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:dicoding_restaurant/ui/detail_page.dart';
 import 'package:dicoding_restaurant/ui/restaurant_list_page.dart';
-import 'package:dicoding_restaurant/ui/test_ui.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -15,9 +14,8 @@ class MyApp extends StatelessWidget {
       theme: lightTheme,
       themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
-      initialRoute: RestaurantListPage  .routeName,
+      initialRoute: RestaurantListPage.routeName,
       routes: {
-        TestUi.routeName: (context) => TestUi(),
         RestaurantListPage.routeName: (context) => RestaurantListPage(),
         RestaurantDetailPage.routeName: (context) => RestaurantDetailPage(
             restaurant:
