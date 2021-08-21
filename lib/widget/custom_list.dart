@@ -30,7 +30,24 @@ class CustomListItem extends StatelessWidget {
                 tag: restaurant.pictureId,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: Image.network('$_url/${restaurant.pictureId}'),
+                  child: Image.network(
+                    '$_url/${restaurant.pictureId}',
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                            color: Theme.of(context).accentColor,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null),
+                      );
+                    },
+                    errorBuilder: (context, e, _) => Center(
+                      child: Icon(Icons.error),
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -7,6 +7,7 @@ enum ResultState { Loading, NoData, HasData, Error }
 
 class RestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
+  final List<Restaurant> _restaurants = [];
   String? id;
 
   RestaurantProvider(this.id, {required this.apiService}) {
@@ -22,6 +23,8 @@ class RestaurantProvider extends ChangeNotifier {
   late String _message = '';
   late int _count = 0;
   late ResultState _state;
+
+  List<Restaurant> get restaurants => _restaurants;
 
   String get message => _message;
 

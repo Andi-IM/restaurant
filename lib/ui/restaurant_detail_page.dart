@@ -13,6 +13,7 @@ class RestaurantDetailPage extends StatefulWidget {
   final String id;
 
   const RestaurantDetailPage({required this.id});
+
   @override
   _RestaurantDetailPageState createState() => _RestaurantDetailPageState();
 }
@@ -86,8 +87,20 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
             appBar: AppBar(
               title: Text('Error'),
             ),
-            body:
-                Center(child: Text('No Connection, Error : ${state.message}')),
+            body: Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error,
+                  size: 50,
+                ),
+                Text(
+                  'Something went wrong :(',
+                ),
+              ],
+            )),
           );
         }
       },
@@ -95,6 +108,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   }
 
   Widget _detailView(Detail restaurant) {
+    print('Restaurant DEBUG: ${restaurant.customerReviews[0].review}');
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -104,7 +118,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               alignment: Alignment.bottomLeft,
               children: <Widget>[
                 Hero(
-                  tag: widget.id,
+                  tag: restaurant.pictureId,
                   child: Image.network(
                     '$_url/${restaurant.pictureId}',
                     width: double.infinity,
@@ -115,7 +129,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                   left: 0,
                   child: _actionButton(
                     context,
-                    () => Navigator.pop(context),
+                        () => Navigator.pop(context),
                   ),
                 ),
                 Positioned(
@@ -159,11 +173,13 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           crossAxisAlignment: WrapCrossAlignment.start,
                           children: [
                             SvgPicture.asset('assets/icon/pin_grey.svg'),
-                            Text(
-                              restaurant.city,
-                              style: Theme.of(context).textTheme.caption,
-                            ),
+                            Text(restaurant.city,
+                                style: Theme.of(context).textTheme.bodyText2),
                           ],
+                        ),
+                        Text(
+                          restaurant.address,
+                          style: Theme.of(context).textTheme.caption,
                         ),
                       ],
                     ),
@@ -216,6 +232,28 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               child: listChip(restaurant.menus),
             ),
             currentTab(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Review',
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: restaurant.customerReviews.length,
+                    itemBuilder: (context, index) => ListTile(
+                      title: Text(
+                        '${restaurant.customerReviews[index].name} pada ${restaurant.customerReviews[index].date}',
+                      ),
+                      subtitle: Text(restaurant.customerReviews[index].review),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

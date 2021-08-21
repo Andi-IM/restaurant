@@ -45,9 +45,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     debouncer = Timer(duration, callback);
   }
 
-  void searchRestaurant(String query) => debounce(() async {
+  void searchRestaurant(String query) async => debounce(() async {
         if (!mounted) return;
-
         setState(() {
           this.query = query;
         });
@@ -64,20 +63,41 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       if (state.state == ResultState.Loading) {
         return Center(child: CircularProgressIndicator());
       } else if (state.state == ResultState.HasData) {
-        var restaurantss = state.result.restaurants;
+        var restaurants = state.result.restaurants;
+
+        var item = restaurants.where((item) {
+          var lowerName = item.name.toLowerCase();
+          var lowerCity = item.city.toLowerCase();
+          var lowerQuery = query.toLowerCase();
+
+          return lowerName.contains(lowerQuery) ||
+              lowerCity.contains(lowerQuery);
+        }).toList();
 
         return ListView.builder(
           shrinkWrap: true,
-          itemCount: restaurantss.length,
+          itemCount: item.length,
           itemBuilder: (context, index) {
-            var restaurant = restaurantss[index];
+            var restaurant = item[index];
             return CustomListItem(restaurant: restaurant);
           },
         );
       } else if (state.state == ResultState.NoData) {
         return Center(child: Text(state.message));
       } else {
-        return Center(child: Text(state.message));
+        return Center(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(
+              Icons.error,
+              size: 30,
+              color: Color(0xFFBDBDBD),
+            ),
+            Text(
+              'Something Went wrong',
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+          ]),
+        );
       }
     });
   }
@@ -153,7 +173,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
             ),
             Flexible(
               child: ChangeNotifierProvider<RestaurantProvider>(
-                create: (_) => RestaurantProvider(null, apiService: ApiService()),
+                create: (_) =>
+                    RestaurantProvider(null, apiService: ApiService()),
                 child: _buildRestaurantItem(),
               ),
             ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
@@ -10,11 +11,19 @@ class ApiService {
   Future<RestaurantResult> list() async {
     final response = await http.get(Uri.parse('$_baseUrl/list'));
 
-    if (response.statusCode == 200) {
-      return RestaurantResult.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to load lists');
+    try {
+      if (response.statusCode == 200) {
+        return RestaurantResult.fromJson(json.decode(response.body));
+      }
+    } on SocketException {
+      print('No Internet Access');
+    } on HttpException {
+      print('Not Found');
+    } on FormatException {
+      print('Bad Response');
     }
+
+    throw Exception('Failed to load lists');
   }
 
   Future<DetailResult> get(String id) async {
