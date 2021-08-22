@@ -25,7 +25,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(widget.id, apiService: ApiService()),
+      create: (_) =>
+          RestaurantProvider(widget.id, null, apiService: ApiService()),
       child: _renderView(),
     );
   }
@@ -88,19 +89,20 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               title: Text('Error'),
             ),
             body: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error,
-                  size: 50,
-                ),
-                Text(
-                  'Something went wrong :(',
-                ),
-              ],
-            )),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error,
+                    size: 50,
+                  ),
+                  Text(
+                    'Something went wrong :(',
+                  ),
+                ],
+              ),
+            ),
           );
         }
       },
@@ -108,7 +110,6 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   }
 
   Widget _detailView(Detail restaurant) {
-    print('Restaurant DEBUG: ${restaurant.customerReviews[0].review}');
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -129,7 +130,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                   left: 0,
                   child: _actionButton(
                     context,
-                        () => Navigator.pop(context),
+                    () => Navigator.pop(context),
                   ),
                 ),
                 Positioned(

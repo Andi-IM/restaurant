@@ -7,30 +7,33 @@ enum ResultState { Loading, NoData, HasData, Error }
 
 class RestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
-  final List<Restaurant> _restaurants = [];
+  String? query;
   String? id;
 
-  RestaurantProvider(this.id, {required this.apiService}) {
+  RestaurantProvider(this.id, this.query, {required this.apiService}) {
     if (id != null) {
       _fetchDetail(id!);
+    } else if (query != null) {
+      _fetchRestaurantByQuery(query!);
     } else {
       _fetchAllRestaurant();
     }
   }
 
   late RestaurantResult _restaurantResult;
+  late SearchResult _searchResult;
   late DetailResult _detailResult;
   late String _message = '';
   late int _count = 0;
   late ResultState _state;
-
-  List<Restaurant> get restaurants => _restaurants;
 
   String get message => _message;
 
   int get count => _count;
 
   RestaurantResult get result => _restaurantResult;
+
+  SearchResult get search => _searchResult;
 
   DetailResult get detail => _detailResult;
 
@@ -68,6 +71,28 @@ class RestaurantProvider extends ChangeNotifier {
         _state = ResultState.HasData;
         notifyListeners();
         return _detailResult = detail;
+      }
+    } catch (e) {
+      _state = ResultState.Error;
+      notifyListeners();
+      return _message = 'Error --> $e';
+    }
+  }
+
+  Future<dynamic> _fetchRestaurantByQuery(String query) async {
+    try {
+      _state = ResultState.Loading;
+      notifyListeners();
+      final response = await apiService.search(query);
+
+      if ((response.founded == 0) || (response.restaurants.isEmpty)) {
+        _state = ResultState.NoData;
+        notifyListeners();
+        return _message = 'No Data Available';
+      } else {
+        _state = ResultState.HasData;
+        notifyListeners();
+        return _searchResult = response;
       }
     } catch (e) {
       _state = ResultState.Error;

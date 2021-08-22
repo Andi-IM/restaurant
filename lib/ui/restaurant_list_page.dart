@@ -20,6 +20,7 @@ class RestaurantListPage extends StatefulWidget {
 
 class _RestaurantListPageState extends State<RestaurantListPage> {
   List<Restaurant> restaurants = [];
+  late Future<SearchResult> restaurantSearch;
   String query = '';
   Timer? debouncer;
 
@@ -46,6 +47,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   }
 
   void searchRestaurant(String query) async => debounce(() async {
+        restaurantSearch = ApiService().search(query);
+
         if (!mounted) return;
         setState(() {
           this.query = query;
@@ -64,21 +67,11 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         return Center(child: CircularProgressIndicator());
       } else if (state.state == ResultState.HasData) {
         var restaurants = state.result.restaurants;
-
-        var item = restaurants.where((item) {
-          var lowerName = item.name.toLowerCase();
-          var lowerCity = item.city.toLowerCase();
-          var lowerQuery = query.toLowerCase();
-
-          return lowerName.contains(lowerQuery) ||
-              lowerCity.contains(lowerQuery);
-        }).toList();
-
         return ListView.builder(
           shrinkWrap: true,
-          itemCount: item.length,
+          itemCount: restaurants.length,
           itemBuilder: (context, index) {
-            var restaurant = item[index];
+            var restaurant = restaurants[index];
             return CustomListItem(restaurant: restaurant);
           },
         );
@@ -171,13 +164,67 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                 ),
               ],
             ),
-            Flexible(
-              child: ChangeNotifierProvider<RestaurantProvider>(
-                create: (_) =>
-                    RestaurantProvider(null, apiService: ApiService()),
-                child: _buildRestaurantItem(),
-              ),
-            ),
+            query == ""
+                ? Flexible(
+                    child: ChangeNotifierProvider<RestaurantProvider>(
+                      create: (_) => RestaurantProvider(null, null,
+                          apiService: ApiService()),
+                      child: _buildRestaurantItem(),
+                    ),
+                  )
+                : FutureBuilder(
+                    future: restaurantSearch,
+                    builder: (context, AsyncSnapshot<SearchResult> snapshot) {
+                      var state = snapshot.connectionState;
+                      if (state == ConnectionState.waiting) {
+                        return Expanded(
+                            child: Center(child: CircularProgressIndicator()));
+                      } else if (state == ConnectionState.done) {}
+                      if (snapshot.hasData) {
+                        return Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.restaurants.length,
+                            itemBuilder: (context, index) {
+                              var restaurant =
+                                  snapshot.data!.restaurants[index];
+                              return CustomListItem(restaurant: restaurant);
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error,
+                                  size: 30,
+                                  color: Color(0xFFBDBDBD),
+                                ),
+                                Text(
+                                  'Something Went wrong',
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                              ]),
+                        );
+                      }
+                      return Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error,
+                                size: 30,
+                                color: Color(0xFFBDBDBD),
+                              ),
+                              Text(
+                                'Something Went wrong',
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ]),
+                      );
+                    }),
           ],
         ),
       ),
