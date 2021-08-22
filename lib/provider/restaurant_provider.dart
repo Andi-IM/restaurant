@@ -23,8 +23,8 @@ class RestaurantProvider extends ChangeNotifier {
   late RestaurantResult _restaurantResult;
   late SearchResult _searchResult;
   late DetailResult _detailResult;
-  late String _message = '';
-  late int _count = 0;
+  String _message = '';
+  int _count = 0;
   late ResultState _state;
 
   String get message => _message;
@@ -39,6 +39,13 @@ class RestaurantProvider extends ChangeNotifier {
 
   ResultState get state => _state;
 
+  sendData(ComposeReview review) {
+    apiService.postReview(review);
+    notifyListeners();
+    _fetchDetail(review.id);
+    notifyListeners();
+  }
+
   Future<dynamic> _fetchAllRestaurant() async {
     try {
       _state = ResultState.Loading;
@@ -52,6 +59,7 @@ class RestaurantProvider extends ChangeNotifier {
       } else {
         _state = ResultState.HasData;
         notifyListeners();
+        _count = restaurant.count;
         return _restaurantResult = restaurant;
       }
     } catch (e) {

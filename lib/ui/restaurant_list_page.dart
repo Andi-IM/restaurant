@@ -62,7 +62,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         var restaurants = state.result.restaurants;
         return ListView.builder(
           shrinkWrap: true,
-          itemCount: restaurants.length,
+          itemCount: state.count,
           itemBuilder: (context, index) {
             var restaurant = restaurants[index];
             return CustomListItem(restaurant: restaurant);
