@@ -1,14 +1,15 @@
 import 'dart:async';
 
+import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
-import 'package:dicoding_restaurant/ui/detail_page.dart';
+import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
 import 'package:dicoding_restaurant/widget/custom_list.dart';
 import 'package:dicoding_restaurant/widget/custom_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class RestaurantListPage extends StatefulWidget {
   static String routeName = '/list_page';
@@ -19,17 +20,15 @@ class RestaurantListPage extends StatefulWidget {
 
 class _RestaurantListPageState extends State<RestaurantListPage> {
   List<Restaurant> restaurants = [];
+  late Future<SearchResult> restaurantSearch;
   String query = '';
   Timer? debouncer;
 
   String url = 'assets/local_restaurant.json';
-  // String url = '';
 
   @override
   void initState() {
     super.initState();
-
-    init();
   }
 
   @override
@@ -47,28 +46,12 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     debouncer = Timer(duration, callback);
   }
 
-  Future init() async {
-    final restaurants =
-        await DataApi.getRestaurants(query, url).onError((error, stackTrace) {
-      print('Error!');
-      showToast('Error : No Internet');
-      return [];
-    });
-    print('panjang array : ${restaurants.length}');
-    setState(() => this.restaurants = restaurants);
-  }
-
-  Future searchRestaurant(String query) async => debounce(() async {
-        final restaurants = await DataApi.getRestaurants(query, url)
-            .onError((error, stackTrace) {
-          return [];
-        });
+  void searchRestaurant(String query) async => debounce(() async {
+        restaurantSearch = ApiService().search(query);
 
         if (!mounted) return;
-
         setState(() {
           this.query = query;
-          this.restaurants = restaurants;
         });
       });
 
@@ -78,24 +61,38 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
         onChanged: searchRestaurant,
       );
 
-  Widget _buildRestaurantItem(BuildContext context, Restaurant restaurant) {
-    return CustomListItem(
-      imageUrl: restaurant.pictureId,
-      name: restaurant.name,
-      location: restaurant.city,
-      stars: restaurant.rating,
-      onTap: () {
-        Navigator.pushNamed(context, RestaurantDetailPage.routeName,
-            arguments: restaurant);
-      },
-    );
-  }
-
-  void showToast(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-    );
+  Widget _buildRestaurantItem() {
+    return Consumer<RestaurantProvider>(builder: (context, state, _) {
+      if (state.state == ResultState.Loading) {
+        return Center(child: CircularProgressIndicator());
+      } else if (state.state == ResultState.HasData) {
+        var restaurants = state.result.restaurants;
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: restaurants.length,
+          itemBuilder: (context, index) {
+            var restaurant = restaurants[index];
+            return CustomListItem(restaurant: restaurant);
+          },
+        );
+      } else if (state.state == ResultState.NoData) {
+        return Center(child: Text(state.message));
+      } else {
+        return Center(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(
+              Icons.error,
+              size: 30,
+              color: Color(0xFFBDBDBD),
+            ),
+            Text(
+              'Something Went wrong',
+              style: Theme.of(context).textTheme.bodyText2,
+            ),
+          ]),
+        );
+      }
+    });
   }
 
   @override
@@ -119,7 +116,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                         'assets/icon/pin.svg',
                         width: 20,
                       ),
-                      Padding(padding: const EdgeInsets.symmetric(horizontal: 2)),
+                      Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2)),
                       Text('Choose location'),
                     ],
                   ),
@@ -166,15 +164,67 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                 ),
               ],
             ),
-            Flexible(
-              child: ListView.builder(
-                itemCount: restaurants.length,
-                itemBuilder: (context, index) {
-                  final restaurant = restaurants[index];
-                  return _buildRestaurantItem(context, restaurant);
-                },
-              ),
-            ),
+            query == ""
+                ? Flexible(
+                    child: ChangeNotifierProvider<RestaurantProvider>(
+                      create: (_) => RestaurantProvider(null, null,
+                          apiService: ApiService()),
+                      child: _buildRestaurantItem(),
+                    ),
+                  )
+                : FutureBuilder(
+                    future: restaurantSearch,
+                    builder: (context, AsyncSnapshot<SearchResult> snapshot) {
+                      var state = snapshot.connectionState;
+                      if (state == ConnectionState.waiting) {
+                        return Expanded(
+                            child: Center(child: CircularProgressIndicator()));
+                      } else if (state == ConnectionState.done) {}
+                      if (snapshot.hasData) {
+                        return Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.restaurants.length,
+                            itemBuilder: (context, index) {
+                              var restaurant =
+                                  snapshot.data!.restaurants[index];
+                              return CustomListItem(restaurant: restaurant);
+                            },
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.error,
+                                  size: 30,
+                                  color: Color(0xFFBDBDBD),
+                                ),
+                                Text(
+                                  'Something Went wrong',
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                              ]),
+                        );
+                      }
+                      return Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error,
+                                size: 30,
+                                color: Color(0xFFBDBDBD),
+                              ),
+                              Text(
+                                'Something Went wrong',
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ]),
+                      );
+                    }),
           ],
         ),
       ),
