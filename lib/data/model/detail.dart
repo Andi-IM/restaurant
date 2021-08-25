@@ -49,11 +49,17 @@ class Detail {
         address: json["address"],
         pictureId: json["pictureId"],
         categories: List<Item>.from(
-            json["categories"].map((x) => Item.fromJson(x))),
+          json["categories"].map(
+            (x) => Item.fromJson(x),
+          ),
+        ),
         menus: Menus.fromJson(json["menus"]),
         rating: json["rating"].toDouble(),
         customerReviews: List<CustomerReview>.from(
-            json["customerReviews"].map((x) => CustomerReview.fromJson(x))),
+          json["customerReviews"].map(
+            (x) => CustomerReview.fromJson(x),
+          ),
+        ),
       );
 }
 
@@ -87,6 +93,24 @@ class CustomerReview {
       );
 }
 
+class ComposeReview {
+  ComposeReview({
+    required this.id,
+    required this.name,
+    required this.review,
+  });
+
+  String id;
+  String name;
+  String review;
+
+  Map<String, String> toJson() => {
+        "id": id,
+        "name": name,
+        "review": review,
+      };
+}
+
 class Menus {
   Menus({
     required this.foods,
@@ -97,9 +121,7 @@ class Menus {
   List<Item> drinks;
 
   factory Menus.fromJson(Map<String, dynamic> json) => Menus(
-        foods:
-            List<Item>.from(json["foods"].map((x) => Item.fromJson(x))),
-        drinks: List<Item>.from(
-            json["drinks"].map((x) => Item.fromJson(x))),
+        foods: List<Item>.from(json["foods"].map((x) => Item.fromJson(x))),
+        drinks: List<Item>.from(json["drinks"].map((x) => Item.fromJson(x))),
       );
 }
