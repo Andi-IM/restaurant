@@ -9,6 +9,8 @@ class ApiService {
   static final String _baseUrl = 'https://restaurant-api.dicoding.dev';
   static final String _detailEndpoint = 'detail';
   static final String _searchEndpoint = 'search';
+  static final String _reviewEndpoint = 'review';
+  final String _token = '12345';
 
   Future<RestaurantResult> list() async {
     final response = await http.get(Uri.parse('$_baseUrl/list'));
@@ -48,5 +50,16 @@ class ApiService {
     } else {
       throw Exception('Failed to load');
     }
+  }
+
+  Future<http.Response> postReview(ComposeReview review) async {
+    return http.post(
+      Uri.parse('$_baseUrl/$_reviewEndpoint'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-Auth-Token': _token,
+      },
+      body: jsonEncode(review.toJson()),
+    );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/detail.dart';
+import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
+import 'package:dicoding_restaurant/widget/custom_bottom_modal.dart';
 import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,9 +12,9 @@ import 'package:provider/provider.dart';
 class RestaurantDetailPage extends StatefulWidget {
   static const String routeName = '/restaurant_detail_page';
 
-  final String id;
+  final Restaurant restaurant;
 
-  const RestaurantDetailPage({required this.id});
+  const RestaurantDetailPage({required this.restaurant});
 
   @override
   _RestaurantDetailPageState createState() => _RestaurantDetailPageState();
@@ -20,21 +22,28 @@ class RestaurantDetailPage extends StatefulWidget {
 
 class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   static const _url = 'https://restaurant-api.dicoding.dev/images/small';
-  var idSelected = 0;
+  var _idSelected = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) =>
-          RestaurantProvider(widget.id, null, apiService: ApiService()),
-      child: _renderView(),
+      create: (_) => RestaurantProvider(widget.restaurant.id, null,
+          apiService: ApiService()),
+      child: Scaffold(
+        body: _renderView(),
+      ),
     );
   }
 
   Widget currentTab() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8),
-      child: chipBarList[idSelected].bodyWidget,
+      child: chipBarList[_idSelected].bodyWidget,
     );
   }
 
@@ -50,8 +59,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: ChoiceChip(
                 label: Text(item.title),
-                selected: idSelected == item.id,
-                onSelected: (_) => setState(() => idSelected = item.id),
+                selected: _idSelected == item.id,
+                onSelected: (_) => setState(() => _idSelected = item.id),
               ),
             ),
           )
@@ -74,55 +83,20 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   }
 
   Widget _renderView() {
-    return Consumer<RestaurantProvider>(
-      builder: (context, state, _) {
-        if (state.state == ResultState.Loading) {
-          return Scaffold(
-            appBar: AppBar(title: Text('Loading..')),
-            body: Center(child: CircularProgressIndicator()),
-          );
-        } else if (state.state == ResultState.HasData) {
-          return Scaffold(body: _detailView(state.detail.detail));
-        } else {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Error'),
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error,
-                    size: 50,
-                  ),
-                  Text(
-                    'Something went wrong :(',
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-      },
-    );
-  }
-
-  Widget _detailView(Detail restaurant) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
+          children: [
             Stack(
               alignment: Alignment.bottomLeft,
               children: <Widget>[
                 Hero(
-                  tag: restaurant.pictureId,
+                  tag: widget.restaurant.pictureId,
                   child: Image.network(
-                    '$_url/${restaurant.pictureId}',
+                    '$_url/${widget.restaurant.pictureId}',
                     width: double.infinity,
+                    fit: BoxFit.fitWidth,
                   ),
                 ),
                 Positioned(
@@ -162,7 +136,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          restaurant.name,
+                          widget.restaurant.name,
                           style: GoogleFonts.poppins(
                             fontSize: 33,
                             fontWeight: FontWeight.bold,
@@ -174,13 +148,17 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           crossAxisAlignment: WrapCrossAlignment.start,
                           children: [
                             SvgPicture.asset('assets/icon/pin_grey.svg'),
-                            Text(restaurant.city,
+                            Text(widget.restaurant.city,
                                 style: Theme.of(context).textTheme.bodyText2),
                           ],
                         ),
-                        Text(
-                          restaurant.address,
-                          style: Theme.of(context).textTheme.caption,
+                        Consumer<RestaurantProvider>(
+                          builder: (context, provider, _) => Text(
+                            provider.state == ResultState.HasData
+                                ? provider.detail.detail.address
+                                : "Loading..",
+                            style: Theme.of(context).textTheme.caption,
+                          ),
                         ),
                       ],
                     ),
@@ -196,7 +174,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           color: Color(0xFFFFD700),
                         ),
                         Text(
-                          '${restaurant.rating}',
+                          '${widget.restaurant.rating}',
                           style: Theme.of(context).textTheme.headline4,
                         ),
                       ],
@@ -207,7 +185,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
             ),
             SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -216,7 +194,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     style: Theme.of(context).textTheme.headline5,
                   ),
                   Text(
-                    '''${restaurant.description}''',
+                    '''${widget.restaurant.description}''',
                     textAlign: TextAlign.justify,
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
@@ -225,32 +203,94 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     'Menu',
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                ],
-              ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: listChip(restaurant.menus),
-            ),
-            currentTab(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                  Consumer<RestaurantProvider>(
+                    builder: (context, provider, _) {
+                      if (provider.state == ResultState.Loading) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (provider.state == ResultState.HasData) {
+                        return Column(
+                          children: [
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: listChip(provider.detail.detail.menus),
+                            ),
+                            currentTab(),
+                          ],
+                        );
+                      } else {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error,
+                                size: 50,
+                              ),
+                              Text(
+                                'Something went wrong :(',
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  SizedBox(height: 10),
                   Text(
                     'Review',
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: restaurant.customerReviews.length,
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text(
-                        '${restaurant.customerReviews[index].name} pada ${restaurant.customerReviews[index].date}',
+                  ElevatedButton(
+                    child: Text('Add Your Review'),
+                    onPressed: () => showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(16.0)),
                       ),
-                      subtitle: Text(restaurant.customerReviews[index].review),
+                      backgroundColor: Colors.white,
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) =>
+                          CustomBottomModal(context, id: widget.restaurant.id),
                     ),
+                  ),
+                  Consumer<RestaurantProvider>(
+                    builder: (context, provider, _) {
+                      if (provider.state == ResultState.Loading) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (provider.state == ResultState.HasData) {
+                        var item = provider.detail.detail.customerReviews;
+                        return Container(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: item.length,
+                            itemBuilder: (context, index) => ListTile(
+                              title: Text(
+                                '${item[index].name} pada ${item[index].date}',
+                              ),
+                              subtitle: Text(item[index].review),
+                            ),
+                          ),
+                        );
+                      } else
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error,
+                                size: 50,
+                              ),
+                              Text(
+                                'Something went wrong :(',
+                              ),
+                            ],
+                          ),
+                        );
+                    },
                   ),
                 ],
               ),
