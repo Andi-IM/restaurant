@@ -1,8 +1,11 @@
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
+import 'package:dicoding_restaurant/provider/database_provider.dart';
+import 'package:dicoding_restaurant/provider/preferences_provider.dart';
 import 'package:dicoding_restaurant/ui/restaurant_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class CustomListItem extends StatelessWidget {
   const CustomListItem({required this.restaurant});
@@ -19,51 +22,68 @@ class CustomListItem extends StatelessWidget {
         RestaurantDetailPage.routeName,
         arguments: restaurant,
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Hero(
-                tag: restaurant.pictureId,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15.0),
-                  child: Image.network(
-                    '$_url/${restaurant.pictureId}',
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(
-                        child: CircularProgressIndicator(
-                            color: Theme.of(context).accentColor,
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null),
-                      );
-                    },
-                    errorBuilder: (context, e, _) => Center(
-                      child: Icon(Icons.error),
+      child: Consumer<PreferencesProvider>(
+        builder: (context, provider, child) => Container(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: provider.isDarkTheme ? Color(0xFF1b1b1b) : Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: provider.isDarkTheme
+                      ? Color(0xFAFAFA)
+                      : Color(0xFFBABABA),
+                  blurRadius: 2.0,
+                  spreadRadius: 1.0,
+                  offset: Offset(0.0, 2.0),
+                )
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Flexible(
+                  flex: 2,
+                  child: Hero(
+                    tag: restaurant.pictureId,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Image.network(
+                        '$_url/${restaurant.pictureId}',
+                        fit: BoxFit.cover,
+                        width: 200,
+                        height: 100,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                                color: Theme.of(context).accentColor,
+                                value: loadingProgress.expectedTotalBytes !=
+                                        null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null),
+                          );
+                        },
+                        errorBuilder: (context, e, _) => Center(
+                          child: Icon(Icons.error),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: _Description(
-                title: restaurant.name,
-                location: restaurant.city,
-                stars: restaurant.rating,
-              ),
-            ),
-            Flexible(
-              child: OutlinedBookmarkButton(),
-            ),
-          ],
-        ),
+                Expanded(
+                  flex: 3,
+                  child: _Description(
+                    title: restaurant.name,
+                    location: restaurant.city,
+                    stars: restaurant.rating,
+                  ),
+                ),
+                OutlinedBookmarkButton(restaurant: restaurant),
+              ],
+            )),
       ),
     );
   }
@@ -133,29 +153,45 @@ class _Description extends StatelessWidget {
 }
 
 class OutlinedBookmarkButton extends StatefulWidget {
+  final Restaurant restaurant;
+
+  OutlinedBookmarkButton({required this.restaurant});
+
   @override
   _OutlinedBookmarkButtonState createState() => _OutlinedBookmarkButtonState();
 }
 
 class _OutlinedBookmarkButtonState extends State<OutlinedBookmarkButton> {
-  bool isBookmarked = false;
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => setState(() {
-        isBookmarked = !isBookmarked;
-      }),
-      child: Padding(
-        padding: EdgeInsets.only(top: 20, right: 20),
-        child: SvgPicture.asset(
-          isBookmarked
-              ? 'assets/icon/bookmark_selected.svg'
-              : 'assets/icon/bookmark_unselected_outlined.svg',
-          width: 40,
-          height: 40,
-        ),
-      ),
-    );
+    return Consumer<PreferencesProvider>(builder: (context, state, child) {
+      return Consumer<DatabaseProvider>(
+        builder: (context, provider, child) => FutureBuilder<bool>(
+            future: provider.isFavorite(widget.restaurant.id),
+            builder: (context, snapshot) {
+              var isFavorite = snapshot.data ?? false;
+              return GestureDetector(
+                onTap: () => setState(() {
+                  isFavorite = !isFavorite;
+                  if (isFavorite) {
+                    provider.addFavorite(widget.restaurant);
+                  } else {
+                    provider.removeFavorite(widget.restaurant.id);
+                  }
+                }),
+                child: Padding(
+                  padding: EdgeInsets.only(right: 4),
+                  child: SvgPicture.asset(
+                    isFavorite
+                        ? 'assets/icon/${state.isDarkTheme ? 'bookmark_selected_dark' : 'bookmark_selected'}.svg'
+                        : 'assets/icon/${state.isDarkTheme ? 'bookmark_unselected_dark' : 'bookmark_unselected_outlined'}.svg',
+                    width: 40,
+                    height: 40,
+                  ),
+                ),
+              );
+            }),
+      );
+    });
   }
 }

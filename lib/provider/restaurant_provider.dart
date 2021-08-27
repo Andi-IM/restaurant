@@ -1,16 +1,15 @@
 import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
+import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:flutter/material.dart';
-
-enum ResultState { Loading, NoData, HasData, Error }
 
 class RestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
   String? query;
   String? id;
 
-  RestaurantProvider(this.id, this.query, {required this.apiService}) {
+  RestaurantProvider({this.query, this.id, required this.apiService}) {
     if (id != null) {
       _fetchDetail(id!);
     } else if (query != null) {

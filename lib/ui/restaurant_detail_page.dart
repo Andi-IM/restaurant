@@ -1,7 +1,9 @@
 import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
+import 'package:dicoding_restaurant/provider/preferences_provider.dart';
 import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
+import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:dicoding_restaurant/widget/custom_bottom_modal.dart';
 import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +34,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(widget.restaurant.id, null,
-          apiService: ApiService()),
+      create: (_) => RestaurantProvider(
+        id: widget.restaurant.id,
+        apiService: ApiService(),
+      ),
       child: Scaffold(
         body: _renderView(),
       ),
@@ -112,13 +116,17 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                   right: 0,
                   child: BookmarkButton(),
                 ),
-                Container(
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
+                Consumer<PreferencesProvider>(
+                  builder: (context, provider, child) => Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: provider.isDarkTheme
+                          ? Color(0xFF333333)
+                          : Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
+                      ),
                     ),
                   ),
                 ),
@@ -209,6 +217,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                         return Center(child: CircularProgressIndicator());
                       } else if (provider.state == ResultState.HasData) {
                         return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,

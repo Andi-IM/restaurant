@@ -87,12 +87,8 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   textTheme: myTextTheme,
   appBarTheme: AppBarTheme(
-    textTheme: myTextTheme.apply(bodyColor: Colors.white),
+    textTheme: myTextTheme.apply(bodyColor: secondaryColor),
     elevation: 0,
-  ),
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    selectedItemColor: secondaryColor,
-    unselectedItemColor: Colors.grey,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
