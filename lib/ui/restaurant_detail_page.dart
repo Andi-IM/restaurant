@@ -2,6 +2,7 @@ import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
+import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:dicoding_restaurant/widget/custom_bottom_modal.dart';
 import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(widget.restaurant.id, null,
-          apiService: ApiService()),
+      create: (_) => RestaurantProvider(
+        id: widget.restaurant.id,
+        apiService: ApiService(),
+      ),
       child: Scaffold(
         body: _renderView(),
       ),

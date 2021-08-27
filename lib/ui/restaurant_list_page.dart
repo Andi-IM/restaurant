@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
+import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:dicoding_restaurant/widget/custom_list.dart';
 import 'package:dicoding_restaurant/widget/custom_search.dart';
 import 'package:flutter/material.dart';
@@ -214,8 +215,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
             query == ""
                 ? Expanded(
                     child: ChangeNotifierProvider<RestaurantProvider>(
-                      create: (_) => RestaurantProvider(null, null,
-                          apiService: ApiService()),
+                      create: (_) =>
+                          RestaurantProvider(apiService: ApiService()),
                       child: _buildRestaurantItem(),
                     ),
                   )
