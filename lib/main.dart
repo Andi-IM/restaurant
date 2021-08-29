@@ -16,6 +16,7 @@ import 'package:dicoding_restaurant/utils/notification_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' show Client;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,10 +44,11 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final client = Client();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => RestaurantProvider(apiService: ApiService()),
+          create: (_) => RestaurantProvider(apiService: ApiService(client)),
         ),
         ChangeNotifierProvider(
           create: (_) => PreferencesProvider(
@@ -69,7 +71,7 @@ class MyApp extends StatelessWidget {
           builder: (context, child) => CupertinoTheme(
             data: CupertinoThemeData(
               brightness:
-                  provider.isDarkTheme ? Brightness.dark : Brightness.light,
+              provider.isDarkTheme ? Brightness.dark : Brightness.light,
             ),
             child: Material(
               child: child,
@@ -81,7 +83,7 @@ class MyApp extends StatelessWidget {
             HomePage.routeName: (context) => HomePage(),
             RestaurantDetailPage.routeName: (context) => RestaurantDetailPage(
                 restaurant:
-                    ModalRoute.of(context)?.settings.arguments as Restaurant),
+                ModalRoute.of(context)?.settings.arguments as Restaurant),
           },
         ),
       ),

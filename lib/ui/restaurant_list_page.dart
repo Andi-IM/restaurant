@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' show Client;
 import 'package:provider/provider.dart';
 
 class RestaurantListPage extends StatefulWidget {
@@ -20,7 +21,9 @@ class RestaurantListPage extends StatefulWidget {
 }
 
 class _RestaurantListPageState extends State<RestaurantListPage> {
+  late RestaurantProvider restaurantProvider;
   late Future<SearchResult> restaurantSearch;
+  List<Restaurant> restaurants = [];
   String query = '';
   Timer? debouncer;
 
@@ -40,7 +43,8 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   }
 
   void searchRestaurant(String query) async => debounce(() async {
-        restaurantSearch = ApiService().search(query);
+        var client = Client();
+        restaurantSearch = ApiService(client).search(query);
 
         if (!mounted) return;
         setState(() {
@@ -49,14 +53,15 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       });
 
   Widget buildSearch() => SearchWidget(
-        hintText: 'Search name or city',
-        text: query,
-        onChanged: searchRestaurant,
-      );
+    hintText: 'Search name or city',
+    text: query,
+    onChanged: searchRestaurant,
+  );
 
   Widget _buildRestaurantItem() {
     return Consumer<RestaurantProvider>(builder: (context, state, _) {
       if (state.state == ResultState.Loading) {
+        restaurantProvider = state;
         return Center(child: CircularProgressIndicator());
       } else if (state.state == ResultState.HasData) {
         var restaurants = state.result.restaurants;
@@ -69,7 +74,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
               var restaurant = restaurants[index];
               return Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                 child: CustomListItem(restaurant: restaurant),
               );
             },
@@ -151,6 +156,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final client = Client();
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,9 +196,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
           ),
           query == ""
               ? ChangeNotifierProvider<RestaurantProvider>(
-                  create: (_) => RestaurantProvider(apiService: ApiService()),
-                  child: _buildRestaurantItem(),
-                )
+                  create: (_) =>
+                      RestaurantProvider(apiService: ApiService(client)),
+                  child: _buildRestaurantItem())
               : _buildQueryItem(),
         ],
       ),

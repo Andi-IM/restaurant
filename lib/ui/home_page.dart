@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: Key("home_page_scaffold"),
         extendBody: true,
         body: _listWidget[_bottomNavIndex],
         bottomNavigationBar: Consumer<PreferencesProvider>(
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
               boxShadow: [
                 BoxShadow(
                   color:
-                      provider.isDarkTheme ? Colors.black : Color(0xFFBABABA),
+                  provider.isDarkTheme ? Colors.black : Color(0xFFBABABA),
                   blurRadius: 1.0,
                   spreadRadius: 0.0,
                   offset: Offset(0.0, 0.0),

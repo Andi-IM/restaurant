@@ -9,6 +9,7 @@ import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' show Client;
 import 'package:provider/provider.dart';
 
 class RestaurantDetailPage extends StatefulWidget {
@@ -33,10 +34,11 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final client = Client();
     return ChangeNotifierProvider<RestaurantProvider>(
       create: (_) => RestaurantProvider(
         id: widget.restaurant.id,
-        apiService: ApiService(),
+        apiService: ApiService(client),
       ),
       child: Scaffold(
         body: _renderView(),
