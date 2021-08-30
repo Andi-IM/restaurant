@@ -1,9 +1,10 @@
+name: Build and Release Apps
+
 on:
   push:
     branches:
       - master
 
-name: Build and Release Apps
 jobs:
   build:
     name: Build Apps
@@ -42,6 +43,14 @@ jobs:
       #     flutter build web
       #     cd build/web
       #     zip -r web-app.zip .
+      - name: Make a tag
+        uses: Klemensas/action-autotag@stable
+        with:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          tag_prefix: "v"
+          version: "${{ steps.previous_step.outputs.version }}"
+          changelog_structure: "**{{messageHeadline}}** {{author}}\n"
+
       - name: Release Apps
         uses: ncipollo/release-action@v1
         with:
