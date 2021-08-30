@@ -18,11 +18,10 @@ class CustomListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(
-        context,
-        RestaurantDetailPage.routeName,
-        arguments: restaurant,
-      ),
+      onTap: () {
+        Navigator.pushNamed(context, RestaurantDetailPage.routeName,
+            arguments: restaurant);
+      },
       child: Consumer<PreferencesProvider>(
         builder: (context, provider, child) => Container(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
@@ -202,7 +201,7 @@ class _OutlinedBookmarkButtonState extends State<OutlinedBookmarkButton> {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
+        gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.red,
         textColor: Colors.white,
