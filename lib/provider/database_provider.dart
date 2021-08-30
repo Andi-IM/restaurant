@@ -1,7 +1,7 @@
-import 'package:dicoding_restaurant/data/db/database_helper.dart';
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
-import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:flutter/foundation.dart';
+import 'package:restaurant/data/db/database_helper.dart';
+import 'package:restaurant/data/model/restaurant.dart';
+import 'package:restaurant/utils/result_state.dart';
 
 class DatabaseProvider extends ChangeNotifier {
   final DatabaseHelper databaseHelper;

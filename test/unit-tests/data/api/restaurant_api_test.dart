@@ -1,10 +1,10 @@
-import 'package:dicoding_restaurant/data/api/api_service.dart';
-import 'package:dicoding_restaurant/data/model/detail.dart';
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/data/model/detail.dart';
+import 'package:restaurant/data/model/restaurant.dart';
 
 import 'restaurant_api_test.mocks.dart';
 

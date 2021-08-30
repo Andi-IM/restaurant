@@ -1,7 +1,7 @@
-import 'package:dicoding_restaurant/data/api/api_service.dart';
-import 'package:dicoding_restaurant/data/model/detail.dart';
-import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/data/model/detail.dart';
+import 'package:restaurant/utils/result_state.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
   final ApiService apiService;

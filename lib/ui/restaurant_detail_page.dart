@@ -1,18 +1,18 @@
-import 'package:dicoding_restaurant/data/api/api_service.dart';
-import 'package:dicoding_restaurant/data/model/detail.dart';
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
-import 'package:dicoding_restaurant/provider/database_provider.dart';
-import 'package:dicoding_restaurant/provider/preferences_provider.dart';
-import 'package:dicoding_restaurant/provider/restaurant_detail_provider.dart';
-import 'package:dicoding_restaurant/utils/result_state.dart';
-import 'package:dicoding_restaurant/widget/custom_bottom_modal.dart';
-import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' show Client;
 import 'package:provider/provider.dart';
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/data/model/detail.dart';
+import 'package:restaurant/data/model/restaurant.dart';
+import 'package:restaurant/provider/database_provider.dart';
+import 'package:restaurant/provider/preferences_provider.dart';
+import 'package:restaurant/provider/restaurant_detail_provider.dart';
+import 'package:restaurant/utils/result_state.dart';
+import 'package:restaurant/widget/custom_bottom_modal.dart';
+import 'package:restaurant/widget/item_chip_bar.dart';
 
 class RestaurantDetailPage extends StatefulWidget {
   static const String routeName = '/restaurant_detail_page';

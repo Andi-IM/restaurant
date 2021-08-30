@@ -1,7 +1,7 @@
-import 'package:dicoding_restaurant/commons/theme.dart';
-import 'package:dicoding_restaurant/data/preferences/preferences_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant/commons/theme.dart';
+import 'package:restaurant/data/preferences/preferences_helper.dart';
 
 class PreferencesProvider extends ChangeNotifier {
   PreferencesHelper preferencesHelper;

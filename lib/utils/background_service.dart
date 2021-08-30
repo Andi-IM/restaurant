@@ -1,10 +1,10 @@
 import 'dart:isolate';
 import 'dart:ui';
 
-import 'package:dicoding_restaurant/data/api/api_service.dart';
-import 'package:dicoding_restaurant/main.dart';
-import 'package:dicoding_restaurant/utils/notification_helper.dart';
 import 'package:http/http.dart' show Client;
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/main.dart';
+import 'package:restaurant/utils/notification_helper.dart';
 
 final ReceivePort port = ReceivePort();
 

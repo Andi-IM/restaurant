@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:dicoding_restaurant/commons/theme.dart';
-import 'package:dicoding_restaurant/provider/preferences_provider.dart';
-import 'package:dicoding_restaurant/provider/scheduling_provider.dart';
-import 'package:dicoding_restaurant/widget/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant/commons/theme.dart';
+import 'package:restaurant/provider/preferences_provider.dart';
+import 'package:restaurant/provider/scheduling_provider.dart';
+import 'package:restaurant/widget/custom_dialog.dart';
 
 class SettingsPage extends StatelessWidget {
   static const String settingsTitle = 'Settings';
@@ -53,7 +53,7 @@ class SettingsPage extends StatelessWidget {
                         if (Platform.isIOS) {
                           customDialog(context);
                         } else {
-                          scheduled.shceduledNews(value);
+                          scheduled.scheduledNews(value);
                           provider.enableDailyReminderActive(value);
 
                           value

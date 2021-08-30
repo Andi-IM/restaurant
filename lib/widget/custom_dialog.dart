@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:dicoding_restaurant/commons/navigation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant/commons/navigation.dart';
 
 customDialog(BuildContext context) {
   if (Platform.isIOS) {
