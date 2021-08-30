@@ -33,13 +33,18 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
   Future<dynamic> _fetchDetail(String id) async {
     try {
+      _state = ResultState.Loading;
       _detailResult = await apiService.get(id);
 
-      if (!_detailResult.error) {
+      print('Detail Result state error : ${_detailResult.error}');
+
+      if (_detailResult.error == false) {
         _state = ResultState.HasData;
+        notifyListeners();
       } else {
         _state = ResultState.NoData;
         _message = 'Empty Data';
+        notifyListeners();
       }
     } catch (e) {
       _state = ResultState.Error;

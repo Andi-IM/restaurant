@@ -205,15 +205,21 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                 )),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                buildSearch(),
+                Expanded(
+                  flex: 5,
+                  child: buildSearch(),
+                ),
                 Consumer<PreferencesProvider>(
-                  builder: (context, state, child) => SvgPicture.asset(
-                    'assets/icon/${state.isDarkTheme ? 'filter_dark' : 'filter'}.svg',
-                    width: 50,
+                  builder: (context, state, child) => Expanded(
+                    flex: 1,
+                    child: SvgPicture.asset(
+                      'assets/icon/${state.isDarkTheme ? 'filter_dark' : 'filter'}.svg',
+                      height: 45,
+                    ),
                   ),
                 ),
               ],

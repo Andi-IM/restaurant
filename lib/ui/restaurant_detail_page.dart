@@ -34,11 +34,9 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<RestaurantDetailProvider>(
+    return ChangeNotifierProvider(
       create: (_) => RestaurantDetailProvider(
-        id: widget.restaurant.id,
-        apiService: ApiService(Client()),
-      ),
+          id: widget.restaurant.id, apiService: ApiService(Client())),
       child: Scaffold(
         body: _renderView(),
       ),
@@ -266,7 +264,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     ),
                   ),
                   Consumer<RestaurantDetailProvider>(
-                    builder: (context, provider, _) {
+                    builder: (context, provider, child) {
                       if (provider.state == ResultState.Loading) {
                         return Center(child: CircularProgressIndicator());
                       } else if (provider.state == ResultState.HasData) {
