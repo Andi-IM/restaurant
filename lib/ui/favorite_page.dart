@@ -43,7 +43,7 @@ class _FavoritePageState extends State<FavoritePage> {
           ),
         );
       } else {
-        return Center(child: Text(provider.message));
+        return Expanded(child: Center(child: Text(provider.message)));
       }
     });
   }

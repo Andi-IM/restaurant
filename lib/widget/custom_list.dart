@@ -4,6 +4,7 @@ import 'package:dicoding_restaurant/provider/preferences_provider.dart';
 import 'package:dicoding_restaurant/ui/restaurant_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -175,8 +176,10 @@ class _OutlinedBookmarkButtonState extends State<OutlinedBookmarkButton> {
                   isFavorite = !isFavorite;
                   if (isFavorite) {
                     provider.addFavorite(widget.restaurant);
+                    toast('Favorite Added!');
                   } else {
                     provider.removeFavorite(widget.restaurant.id);
+                    toast('Favorite Removed!');
                   }
                 }),
                 child: Padding(
@@ -193,5 +196,16 @@ class _OutlinedBookmarkButtonState extends State<OutlinedBookmarkButton> {
             }),
       );
     });
+  }
+
+  toast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 }

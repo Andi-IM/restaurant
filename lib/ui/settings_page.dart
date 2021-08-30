@@ -6,6 +6,7 @@ import 'package:dicoding_restaurant/provider/scheduling_provider.dart';
 import 'package:dicoding_restaurant/widget/custom_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +55,10 @@ class SettingsPage extends StatelessWidget {
                         } else {
                           scheduled.shceduledNews(value);
                           provider.enableDailyReminderActive(value);
+
+                          value
+                              ? toast('Reminder Activated every 11.00 AM')
+                              : toast('Reminder Canceled!');
                         }
                       },
                     );
@@ -65,6 +70,17 @@ class SettingsPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  toast(String message) {
+    return Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override

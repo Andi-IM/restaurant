@@ -7,7 +7,7 @@ import 'package:mockito/mockito.dart';
 
 import 'restaurant_provider_test.mocks.dart';
 
-const apiResponse = {
+const _apiResponse = {
   'error': false,
   'message': 'success',
   'count': 1,
@@ -24,7 +24,7 @@ const apiResponse = {
   ]
 };
 
-const testRestaurant = {
+const _testRestaurant = {
   "id": "rqdv5juczeskfw1e867",
   "name": "Melting Pot",
   "description":
@@ -34,7 +34,7 @@ const testRestaurant = {
   "rating": 4.2
 };
 
-const searchResponse = {
+const _searchResponse = {
   "error": false,
   "founded": 1,
   "restaurants": [
@@ -58,14 +58,14 @@ void main() {
 
     setUp(() {
       when(apiMock.list()).thenAnswer(
-          (_) async => Future.value(RestaurantResult.fromJson(apiResponse)));
+          (_) async => Future.value(RestaurantResult.fromJson(_apiResponse)));
       restaurantProvider = RestaurantProvider(apiService: apiMock);
     });
 
     test('verify that fetch all restaurants json parse run as expected',
         () async {
-      var result = restaurantProvider!.result.restaurants[0];
-      var jsonRestaurant = Restaurant.fromJson(testRestaurant);
+          var result = restaurantProvider!.result.restaurants[0];
+      var jsonRestaurant = Restaurant.fromJson(_testRestaurant);
       expect(result.id, equals(jsonRestaurant.id));
       expect(result.name, equals(jsonRestaurant.name));
       expect(result.description, equals(jsonRestaurant.description));
@@ -76,9 +76,9 @@ void main() {
 
     test('verify that restaurants search json parse run as expected', () async {
       when(apiMock.search('melting'))
-          .thenAnswer((_) async => SearchResult.fromJson(searchResponse));
+          .thenAnswer((_) async => SearchResult.fromJson(_searchResponse));
       var result = restaurantProvider!.result.restaurants[0];
-      var jsonRestaurant = Restaurant.fromJson(testRestaurant);
+      var jsonRestaurant = Restaurant.fromJson(_testRestaurant);
       expect(result.id, equals(jsonRestaurant.id));
       expect(result.name, equals(jsonRestaurant.name));
       expect(result.description, equals(jsonRestaurant.description));

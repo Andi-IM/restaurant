@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' show Client;
 import 'package:provider/provider.dart';
@@ -53,16 +54,27 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       });
 
   Widget buildSearch() => SearchWidget(
-    hintText: 'Search name or city',
-    text: query,
-    onChanged: searchRestaurant,
-  );
+        hintText: 'Search name or city',
+        text: query,
+        onChanged: searchRestaurant,
+      );
+
+  toast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
 
   Widget _buildRestaurantItem() {
     return Consumer<RestaurantProvider>(builder: (context, state, _) {
       if (state.state == ResultState.Loading) {
         restaurantProvider = state;
-        return Center(child: CircularProgressIndicator());
+        return Expanded(child: Center(child: CircularProgressIndicator()));
       } else if (state.state == ResultState.HasData) {
         var restaurants = state.result.restaurants;
         return Expanded(
@@ -74,7 +86,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
               var restaurant = restaurants[index];
               return Padding(
                 padding:
-                const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                 child: CustomListItem(restaurant: restaurant),
               );
             },
@@ -83,44 +95,9 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
       } else if (state.state == ResultState.NoData) {
         return Center(child: Text(state.message));
       } else {
-        return Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(
-              Icons.error,
-              size: 30,
-              color: Color(0xFFBDBDBD),
-            ),
-            Text(
-              'Something Went wrong',
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          ]),
-        );
-      }
-    });
-  }
-
-  Widget _buildQueryItem() {
-    return FutureBuilder(
-      future: restaurantSearch,
-      builder: (context, AsyncSnapshot<SearchResult> snapshot) {
-        var state = snapshot.connectionState;
-        if (state == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state == ConnectionState.done) {}
-        if (snapshot.hasData) {
-          return Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data!.restaurants.length,
-              itemBuilder: (context, index) {
-                var restaurant = snapshot.data!.restaurants[index];
-                return CustomListItem(restaurant: restaurant);
-              },
-            ),
-          );
-        } else if (snapshot.hasError) {
-          return Center(
+        toast('No Connection!');
+        return Expanded(
+          child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -135,20 +112,68 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
                 ),
               ],
             ),
-          );
+          ),
+        );
+      }
+    });
+  }
+
+  Widget _buildQueryItem() {
+    return FutureBuilder(
+      future: restaurantSearch,
+      builder: (context, AsyncSnapshot<SearchResult> snapshot) {
+        var state = snapshot.connectionState;
+        if (state == ConnectionState.waiting) {
+          return Expanded(child: Center(child: CircularProgressIndicator()));
+        } else if (state == ConnectionState.done) {
+          if (snapshot.hasData) {
+            return Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data!.restaurants.length,
+                itemBuilder: (context, index) {
+                  var restaurant = snapshot.data!.restaurants[index];
+                  return CustomListItem(restaurant: restaurant);
+                },
+              ),
+            );
+          } else if (snapshot.hasError) {
+            toast('No Connection!');
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error,
+                    size: 30,
+                    color: Color(0xFFBDBDBD),
+                  ),
+                  Text(
+                    'Something Went wrong',
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                ],
+              ),
+            );
+          }
         }
-        return Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(
-              Icons.error,
-              size: 30,
-              color: Color(0xFFBDBDBD),
+        return Expanded(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error,
+                  size: 30,
+                  color: Color(0xFFBDBDBD),
+                ),
+                Text(
+                  'Something Went wrong',
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              ],
             ),
-            Text(
-              'Something Went wrong',
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          ]),
+          ),
         );
       },
     );

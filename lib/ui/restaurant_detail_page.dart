@@ -2,7 +2,7 @@ import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:dicoding_restaurant/provider/preferences_provider.dart';
-import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
+import 'package:dicoding_restaurant/provider/restaurant_detail_provider.dart';
 import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:dicoding_restaurant/widget/custom_bottom_modal.dart';
 import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
@@ -34,11 +34,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final client = Client();
-    return ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(
+    return ChangeNotifierProvider<RestaurantDetailProvider>(
+      create: (_) => RestaurantDetailProvider(
         id: widget.restaurant.id,
-        apiService: ApiService(client),
+        apiService: ApiService(Client()),
       ),
       child: Scaffold(
         body: _renderView(),
@@ -162,8 +161,8 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                                 style: Theme.of(context).textTheme.bodyText2),
                           ],
                         ),
-                        Consumer<RestaurantProvider>(
-                          builder: (context, provider, _) => Text(
+                        Consumer<RestaurantDetailProvider>(
+                          builder: (context, provider, child) => Text(
                             provider.state == ResultState.HasData
                                 ? provider.detail.detail.address
                                 : "Loading..",
@@ -213,7 +212,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                     'Menu',
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  Consumer<RestaurantProvider>(
+                  Consumer<RestaurantDetailProvider>(
                     builder: (context, provider, _) {
                       if (provider.state == ResultState.Loading) {
                         return Center(child: CircularProgressIndicator());
@@ -266,7 +265,7 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                           CustomBottomModal(context, id: widget.restaurant.id),
                     ),
                   ),
-                  Consumer<RestaurantProvider>(
+                  Consumer<RestaurantDetailProvider>(
                     builder: (context, provider, _) {
                       if (provider.state == ResultState.Loading) {
                         return Center(child: CircularProgressIndicator());
