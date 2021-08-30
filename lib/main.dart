@@ -1,23 +1,23 @@
 import 'dart:io';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
-import 'package:dicoding_restaurant/data/api/api_service.dart';
-import 'package:dicoding_restaurant/data/db/database_helper.dart';
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
-import 'package:dicoding_restaurant/data/preferences/preferences_helper.dart';
-import 'package:dicoding_restaurant/provider/database_provider.dart';
-import 'package:dicoding_restaurant/provider/preferences_provider.dart';
-import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
-import 'package:dicoding_restaurant/provider/scheduling_provider.dart';
-import 'package:dicoding_restaurant/ui/home_page.dart';
-import 'package:dicoding_restaurant/ui/restaurant_detail_page.dart';
-import 'package:dicoding_restaurant/utils/background_service.dart';
-import 'package:dicoding_restaurant/utils/notification_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' show Client;
 import 'package:provider/provider.dart';
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/data/db/database_helper.dart';
+import 'package:restaurant/data/model/restaurant.dart';
+import 'package:restaurant/data/preferences/preferences_helper.dart';
+import 'package:restaurant/provider/database_provider.dart';
+import 'package:restaurant/provider/preferences_provider.dart';
+import 'package:restaurant/provider/restaurant_provider.dart';
+import 'package:restaurant/provider/scheduling_provider.dart';
+import 'package:restaurant/ui/home_page.dart';
+import 'package:restaurant/ui/restaurant_detail_page.dart';
+import 'package:restaurant/utils/background_service.dart';
+import 'package:restaurant/utils/notification_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'commons/navigation.dart';

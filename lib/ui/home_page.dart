@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:dicoding_restaurant/commons/theme.dart';
-import 'package:dicoding_restaurant/provider/preferences_provider.dart';
-import 'package:dicoding_restaurant/ui/favorite_page.dart';
-import 'package:dicoding_restaurant/ui/restaurant_list_page.dart';
-import 'package:dicoding_restaurant/ui/settings_page.dart';
+import 'package:restaurant/commons/theme.dart';
+import 'package:restaurant/provider/preferences_provider.dart';
+import 'package:restaurant/ui/favorite_page.dart';
+import 'package:restaurant/ui/restaurant_list_page.dart';
+import 'package:restaurant/ui/settings_page.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

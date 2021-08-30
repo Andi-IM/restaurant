@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:dicoding_restaurant/commons/navigation.dart';
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:restaurant/commons/navigation.dart';
+import 'package:restaurant/data/model/restaurant.dart';
 import 'package:rxdart/subjects.dart';
 
 final selectNotificationSubject = BehaviorSubject<String>();
@@ -62,7 +62,7 @@ class NotificationHelper {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    var titleNotification = "<b>Rekomendasi Restaurant Hari ini</b>";
+    var titleNotification = "<b>Best Restaurant for You</b>";
     var titleRestaurant = restaurants.restaurants[0].name;
 
     await flutterLocalNotificationsPlugin.show(

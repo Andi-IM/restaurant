@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:dicoding_restaurant/data/api/api_service.dart';
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
-import 'package:dicoding_restaurant/provider/preferences_provider.dart';
-import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
-import 'package:dicoding_restaurant/utils/result_state.dart';
-import 'package:dicoding_restaurant/widget/custom_list.dart';
-import 'package:dicoding_restaurant/widget/custom_search.dart';
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/data/model/restaurant.dart';
+import 'package:restaurant/provider/preferences_provider.dart';
+import 'package:restaurant/provider/restaurant_provider.dart';
+import 'package:restaurant/utils/result_state.dart';
+import 'package:restaurant/widget/custom_list.dart';
+import 'package:restaurant/widget/custom_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -26,7 +26,7 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
   late Future<SearchResult> restaurantSearch;
   List<Restaurant> restaurants = [];
   String query = '';
-  Timer? debouncer;
+  Timer? deBouncer;
 
   @override
   void dispose() {
@@ -37,10 +37,10 @@ class _RestaurantListPageState extends State<RestaurantListPage> {
     VoidCallback callback, {
     Duration duration = const Duration(milliseconds: 1000),
   }) {
-    if (debouncer != null) {
-      debouncer!.cancel();
+    if (deBouncer != null) {
+      deBouncer!.cancel();
     }
-    debouncer = Timer(duration, callback);
+    deBouncer = Timer(duration, callback);
   }
 
   void searchRestaurant(String query) async => debounce(() async {

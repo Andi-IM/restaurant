@@ -1,9 +1,9 @@
-import 'package:dicoding_restaurant/data/api/api_service.dart';
-import 'package:dicoding_restaurant/data/model/detail.dart';
-import 'package:dicoding_restaurant/provider/restaurant_detail_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:restaurant/data/api/api_service.dart';
+import 'package:restaurant/data/model/detail.dart';
+import 'package:restaurant/provider/restaurant_detail_provider.dart';
 
 import 'restaurant_detail_provider_test.mocks.dart';
 

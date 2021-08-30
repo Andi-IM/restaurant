@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:dicoding_restaurant/data/model/restaurant.dart';
-import 'package:dicoding_restaurant/provider/database_provider.dart';
-import 'package:dicoding_restaurant/utils/result_state.dart';
-import 'package:dicoding_restaurant/widget/custom_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant/data/model/restaurant.dart';
+import 'package:restaurant/provider/database_provider.dart';
+import 'package:restaurant/utils/result_state.dart';
+import 'package:restaurant/widget/custom_list.dart';
 
 class FavoritePage extends StatefulWidget {
   static String favoriteTitle = 'Favorites';

@@ -1,7 +1,7 @@
-import 'package:dicoding_restaurant/data/model/detail.dart';
-import 'package:dicoding_restaurant/provider/restaurant_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant/data/model/detail.dart';
+import 'package:restaurant/provider/restaurant_provider.dart';
 
 class CustomBottomModal extends StatefulWidget {
   final BuildContext ctx;
@@ -48,7 +48,7 @@ class _CustomBottomModalState extends State<CustomBottomModal> {
               autofocus: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Nama',
+                hintText: 'Name',
               ),
               controller: _nameController,
             ),
@@ -58,7 +58,7 @@ class _CustomBottomModalState extends State<CustomBottomModal> {
             child: TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Saya suka ...',
+                hintText: 'I like ...',
               ),
               keyboardType: TextInputType.multiline,
               minLines: 4,
@@ -67,7 +67,7 @@ class _CustomBottomModalState extends State<CustomBottomModal> {
             ),
           ),
           ElevatedButton(
-              child: Text('Kirim'),
+              child: Text('Send'),
               onPressed: () {
                 var compose = ComposeReview(
                     id: widget.id,
