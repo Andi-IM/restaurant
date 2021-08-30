@@ -51,21 +51,45 @@ final TextTheme myTextThemeDark = TextTheme(
   headline5: GoogleFonts.poppins(
       fontSize: 23, fontWeight: FontWeight.bold, color: secondaryColor),
   headline6: GoogleFonts.poppins(
-      fontSize: 19, fontWeight: FontWeight.w500, letterSpacing: 0.15),
+      fontSize: 19,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.15,
+      color: Color(0xFFBABABA)),
   subtitle1: GoogleFonts.poppins(
-      fontSize: 15, fontWeight: FontWeight.w400, letterSpacing: 0.15),
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.15,
+      color: Color(0xFFBABABA)),
   subtitle2: GoogleFonts.poppins(
-      fontSize: 13, fontWeight: FontWeight.w500, letterSpacing: 0.1),
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.1,
+      color: Color(0xFFBABABA)),
   bodyText1: GoogleFonts.poppins(
-      fontSize: 15, fontWeight: FontWeight.w400, letterSpacing: 0.5),
+      fontSize: 15,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.5,
+      color: Color(0xFFBABABA)),
   bodyText2: GoogleFonts.poppins(
-      fontSize: 13, fontWeight: FontWeight.w400, letterSpacing: 0.25),
+      fontSize: 13,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.25,
+      color: Color(0xFFBABABA)),
   button: GoogleFonts.poppins(
-      fontSize: 13, fontWeight: FontWeight.w500, letterSpacing: 1.25),
+      fontSize: 13,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 1.25,
+      color: Color(0xFFBABABA)),
   caption: GoogleFonts.poppins(
-      fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.4,
+      color: Color(0xFFBABABA)),
   overline: GoogleFonts.poppins(
-      fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
+      fontSize: 10,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 1.5,
+      color: Color(0xFFBABABA)),
 );
 
 ThemeData lightTheme = ThemeData(

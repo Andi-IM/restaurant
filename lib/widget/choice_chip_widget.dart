@@ -58,7 +58,7 @@ class _ChipsFilterState extends State<ChipsFilter> {
         margin: EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
           color: isActive ? Color(0xFFFF4747) : Color(0xFFFFEDED),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(7),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
