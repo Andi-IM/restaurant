@@ -81,4 +81,15 @@ class Restaurant {
         "city": city,
         "rating": rating,
       };
+
+  static Restaurant empty() {
+    return Restaurant(
+      id: "",
+      name: "",
+      description: "",
+      pictureId: "",
+      city: "",
+      rating: 0.0,
+    );
+  }
 }
