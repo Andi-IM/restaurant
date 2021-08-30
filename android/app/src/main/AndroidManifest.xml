@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="id.airham.dicoding_restaurant">
+    package="id.airham.restaurant">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -7,7 +7,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="dicoding_restaurant">
+        android:label="restaurant">
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
