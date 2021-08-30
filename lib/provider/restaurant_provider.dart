@@ -1,16 +1,15 @@
 import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
+import 'package:dicoding_restaurant/utils/result_state.dart';
 import 'package:flutter/material.dart';
-
-enum ResultState { Loading, NoData, HasData, Error }
 
 class RestaurantProvider extends ChangeNotifier {
   final ApiService apiService;
   String? query;
   String? id;
 
-  RestaurantProvider(this.id, this.query, {required this.apiService}) {
+  RestaurantProvider({this.id, this.query, required this.apiService}) {
     if (id != null) {
       _fetchDetail(id!);
     } else if (query != null) {
@@ -22,9 +21,10 @@ class RestaurantProvider extends ChangeNotifier {
 
   late RestaurantResult _restaurantResult;
   late SearchResult _searchResult;
-  late DetailResult _detailResult;
+
   String _message = '';
   int _count = 0;
+  late DetailResult _detailResult;
   late ResultState _state;
 
   String get message => _message;
@@ -33,9 +33,9 @@ class RestaurantProvider extends ChangeNotifier {
 
   RestaurantResult get result => _restaurantResult;
 
-  SearchResult get search => _searchResult;
-
   DetailResult get detail => _detailResult;
+
+  SearchResult get search => _searchResult;
 
   ResultState get state => _state;
 
@@ -69,24 +69,6 @@ class RestaurantProvider extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> _fetchDetail(String id) async {
-    try {
-      _state = ResultState.Loading;
-      notifyListeners();
-      final detail = await apiService.get(id);
-
-      if (detail.error == false) {
-        _state = ResultState.HasData;
-        notifyListeners();
-        return _detailResult = detail;
-      }
-    } catch (e) {
-      _state = ResultState.Error;
-      notifyListeners();
-      return _message = 'Error --> $e';
-    }
-  }
-
   Future<dynamic> _fetchRestaurantByQuery(String query) async {
     try {
       _state = ResultState.Loading;
@@ -106,6 +88,23 @@ class RestaurantProvider extends ChangeNotifier {
       _state = ResultState.Error;
       notifyListeners();
       return _message = 'Error --> $e';
+    }
+  }
+
+  Future<dynamic> _fetchDetail(String id) async {
+    try {
+      _detailResult = await apiService.get(id);
+
+      if (!_detailResult.error) {
+        _state = ResultState.HasData;
+      } else {
+        _state = ResultState.NoData;
+        _message = 'Empty Data';
+      }
+    } catch (e) {
+      _state = ResultState.Error;
+      _message = 'Error --> $e';
+      notifyListeners();
     }
   }
 }
