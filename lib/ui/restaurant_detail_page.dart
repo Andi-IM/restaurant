@@ -1,6 +1,7 @@
 import 'package:dicoding_restaurant/data/api/api_service.dart';
 import 'package:dicoding_restaurant/data/model/detail.dart';
 import 'package:dicoding_restaurant/data/model/restaurant.dart';
+import 'package:dicoding_restaurant/provider/database_provider.dart';
 import 'package:dicoding_restaurant/provider/preferences_provider.dart';
 import 'package:dicoding_restaurant/provider/restaurant_detail_provider.dart';
 import 'package:dicoding_restaurant/utils/result_state.dart';
@@ -8,6 +9,7 @@ import 'package:dicoding_restaurant/widget/custom_bottom_modal.dart';
 import 'package:dicoding_restaurant/widget/item_chip_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' show Client;
 import 'package:provider/provider.dart';
@@ -76,10 +78,12 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
       padding: EdgeInsets.only(top: 20, left: 20),
       child: GestureDetector(
         onTap: onTap,
-        child: SvgPicture.asset(
-          'assets/icon/left_chevron.svg',
-          width: 40,
-          height: 40,
+        child: Consumer<PreferencesProvider>(
+          builder: (context, provider, child) => SvgPicture.asset(
+            'assets/icon/${provider.isDarkTheme ? 'left_chevron_dark' : 'left_chevron'}.svg',
+            width: 40,
+            height: 40,
+          ),
         ),
       ),
     );
@@ -113,7 +117,10 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
                 Positioned(
                   top: 0,
                   right: 0,
-                  child: BookmarkButton(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20, top: 20),
+                    child: BookmarkButton(restaurant: widget.restaurant),
+                  ),
                 ),
                 Consumer<PreferencesProvider>(
                   builder: (context, provider, child) => Container(
@@ -311,29 +318,58 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
 }
 
 class BookmarkButton extends StatefulWidget {
+  final Restaurant restaurant;
+
+  BookmarkButton({required this.restaurant});
+
   @override
   _BookmarkButtonState createState() => _BookmarkButtonState();
 }
 
 class _BookmarkButtonState extends State<BookmarkButton> {
-  bool isBookmarked = false;
+  toast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => setState(() {
-        isBookmarked = !isBookmarked;
-      }),
-      child: Padding(
-        padding: EdgeInsets.only(top: 20, right: 20),
-        child: SvgPicture.asset(
-          isBookmarked
-              ? 'assets/icon/bookmark_selected.svg'
-              : 'assets/icon/bookmark_unselected.svg',
-          width: 40,
-          height: 40,
-        ),
-      ),
-    );
+    return Consumer<PreferencesProvider>(builder: (context, state, child) {
+      return Consumer<DatabaseProvider>(
+        builder: (context, provider, child) => FutureBuilder<bool>(
+            future: provider.isFavorite(widget.restaurant.id),
+            builder: (context, snapshot) {
+              var isFavorite = snapshot.data ?? false;
+              return GestureDetector(
+                onTap: () => setState(() {
+                  isFavorite = !isFavorite;
+                  if (isFavorite) {
+                    provider.addFavorite(widget.restaurant);
+                    toast('Favorite Added!');
+                  } else {
+                    provider.removeFavorite(widget.restaurant.id);
+                    toast('Favorite Removed!');
+                  }
+                }),
+                child: Padding(
+                  padding: EdgeInsets.only(right: 4),
+                  child: SvgPicture.asset(
+                    isFavorite
+                        ? 'assets/icon/${state.isDarkTheme ? 'bookmark_selected_dark' : 'bookmark_selected'}.svg'
+                        : 'assets/icon/${state.isDarkTheme ? 'bookmark_unselected_dark' : 'bookmark_unselected'}.svg',
+                    width: 40,
+                    height: 40,
+                  ),
+                ),
+              );
+            }),
+      );
+    });
   }
 }
