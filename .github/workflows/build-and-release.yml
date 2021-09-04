@@ -42,13 +42,7 @@ jobs:
       #   run: |
       #     flutter build web
       #     cd build/web
-      #     zip -r web-app.zip .
-      - name: Make a tag
-        uses: Klemensas/action-autotag@stable
-        with:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          tag_prefix: "v"
-          changelog_structure: "**{{messageHeadline}}** {{author}}\n"
+      #     zip -r web-app.zip 
 
       - name: Release Apps
         uses: ncipollo/release-action@v1
