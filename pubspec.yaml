@@ -34,7 +34,7 @@ dependencies:
   provider: ^5.0.0
   pull_to_refresh: ^2.0.0
   shared_preferences: ^2.0.5
-  android_alarm_manager: ^2.0.0
+  android_alarm_manager_plus: ^2.0.5
   rxdart: ^0.26.0
   flutter_local_notifications: ^5.0.0+3
   intl: ^0.17.0
